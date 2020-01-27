@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:library_app/screens/profile_data.dart';
+import 'package:library_app/services/database.dart';
+import 'package:provider/provider.dart';
+
 
 void main(){
   runApp(ProfileScreen());
@@ -16,9 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text("Profile"),
       ),
-      body: Container(
-        
-      ),
+      body: ProfileData(),
     );
   }
 }

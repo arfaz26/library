@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:library_app/screens/boks.dart';
+import 'package:library_app/screens/notification.dart';
+import 'package:library_app/screens/profile.dart';
+import 'package:library_app/screens/transaction.dart';
+import 'package:library_app/services/auth.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
@@ -19,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _formkey = GlobalKey<FormState>();
   String email = "";
   TextEditingController _controller = TextEditingController();
+
+  AuthService _auth = AuthService();
 
   @override
   void initState() {
@@ -57,7 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.pushNamed(context, '/');
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return HomeScreen();
+                }));
               },
             ),
             Divider(),
@@ -67,12 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text("Books"),
                 ),
                 onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushNamed(context, '/books');
                   // Navigator.of(context).pop();
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return BookScreen();
-                  // }));
+                  // Navigator.pushNamed(context, '/books');
+                  Navigator.of(context).pop();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BookFind();
+                  }));
                 }),
             Divider(),
             ListTile(
@@ -82,7 +91,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 onTap: () {
                   Navigator.of(context).pop();
-                  Navigator.pushNamed(context, '/transaction');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return TransactionScreen();
+                  }));
                 }),
             Divider(),
             ListTile(
@@ -92,7 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.pushNamed(context, '/notification');
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return NotificationScreen();
+                }));
               },
             ),
             Divider(),
@@ -103,7 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.pushNamed(context, '/profile');
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ProfileScreen();
+                }));
               },
             ),
             Divider(),
@@ -113,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 "Logout",
               ),
               onPressed: () {
-                null;
+                _auth.signOut();
               },
             )
           ],
@@ -192,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void resultListener(SpeechRecognitionResult result) {
     setState(() {
-      lastWords = "${result.recognizedWords} - ${result.finalResult}";
+      lastWords = "${result.recognizedWords}"; // - ${result.finalResult}";
     });
   }
 

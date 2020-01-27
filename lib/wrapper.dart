@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-void main(){
-  runApp(Wrapper());
-}
-
-class Wrapper extends StatefulWidget {
-  @override
-  _WrapperState createState() => _WrapperState();
-}
-
-class _WrapperState extends State<Wrapper> {
+import 'package:library_app/Authentication/login.dart';
+import 'package:library_app/screens/home.dart';
+import 'package:provider/provider.dart';
+import 'package:library_app/models/users.dart';
+class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
-    );
+    final user =Provider.of<User>(context);
+    //print(user.uid);
+    if(user==null){
+      return LoginScreen();
+    }
+    else{
+      return HomeScreen();
+    }
   }
 }
