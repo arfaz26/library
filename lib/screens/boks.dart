@@ -3,30 +3,30 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-  var url =
-      'https://www.googleapis.com/books/v1/volumes?q=title:python&maxResults=20';
-  //String search='';
-void main(){
-  runApp(BookFind());
-}
+//String abcd="";
+// var url =
+//     'https://www.googleapis.com/books/v1/volumes?q=title:python&maxResults=20';
+//String search='';
+
 class BookFind extends StatefulWidget {
-  String search='';
-  BookFind({this.search});
+  final String search;
+  BookFind({@required this.search});
   @override
-  _BookFindState createState() => _BookFindState();
+  _BookFindState createState() => _BookFindState(search: search);
 }
 
 class _BookFindState extends State<BookFind> {
-
+  final String search;
+  _BookFindState({this.search});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Book Finder'),
-       // leading: Icon(Icons.error),
+        title: Text('Book'),
+        // leading: Icon(Icons.error),
       ),
       body: FutureBuilder(
-          future: _fetchPotterBooks(),
+          future: _fetchPotterBooks(search),
           builder: (context, AsyncSnapshot<List<Book>> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
@@ -40,9 +40,9 @@ class _BookFindState extends State<BookFind> {
             }
           }),
     );
+  }
 }
 
-}
 class BookTile extends StatelessWidget {
   final Book book;
   BookTile(this.book);
@@ -64,8 +64,21 @@ class BookTile extends StatelessWidget {
 //   return List.generate(100, (i) => Book(title: 'Book $i', author: 'Author $i'));
 // }
 
-Future<List<Book>> _fetchPotterBooks() async {
+Future<List<Book>> _fetchPotterBooks(String search) async {
+  // var url =
+  //     'https://www.googleapis.com/books/v1/volumes?q=title:python&maxResults=20';
+
+// if(search==""){
+//   abcd="Python";
+// }
+// else{
+//   abcd=search;
+// }
+  final url = Uri.encodeFull(
+      'https://www.googleapis.com/books/v1/volumes?q=title:${search}');//&maxResult=30');
+
   final res = await http.get(url);
+  print(url);
   //print(res.body);
   if (res.statusCode == 200) {
     return _parseBookJson(res.body);
@@ -77,7 +90,8 @@ Future<List<Book>> _fetchPotterBooks() async {
 List<Book> _parseBookJson(String jsonStr) {
   final jsonMap = json.decode(jsonStr);
   final jsonList = (jsonMap['items'] as List);
-  return jsonList
+  try{
+    return jsonList
       .map((jsonBook) => Book(
             title: jsonBook['volumeInfo']['title'],
             author: (jsonBook['volumeInfo']['authors'] as List).join(', '),
@@ -85,6 +99,10 @@ List<Book> _parseBookJson(String jsonStr) {
             description: jsonBook['volumeInfo']['description'],
           ))
       .toList();
+  }
+  catch(e){
+    print(e);
+  }
 }
 
 class Book {
@@ -99,7 +117,7 @@ class Book {
       this.thumbnailUrl,
       this.description})
       : assert(title != null),
-     //  assert(description != null),
+        //  assert(description != null),
         assert(author != null);
 }
 
@@ -149,18 +167,16 @@ class BookDetails extends StatelessWidget {
             // child: Text(book.description,
             //     style: TextStyle(fontWeight: FontWeight.w700)),
           ),
-          
         ],
       ),
     );
   }
-Widget checkValue(){
-  if(book.description==null){
-    return Text("No Description");
-  }
-  else{
-    return Text(book.description);
-  }
-}
 
+  Widget checkValue() {
+    if (book.description == null) {
+      return Text("No Description");
+    } else {
+      return Text(book.description);
+    }
+  }
 }

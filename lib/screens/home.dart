@@ -80,7 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Navigator.pushNamed(context, '/books');
                   Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return BookFind();
+                    return BookFind(
+                      search: lastWords,
+                    );
                   }));
                 }),
             Divider(),
@@ -158,7 +160,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             hintText: 'Search Book',
                             suffixIcon: GestureDetector(
                               child: Icon(Icons.mic),
-                              onTap: startListening,
+                              onTap: () {
+                                startListening();
+                                _controller.clear();
+                              },
                             ),
                           ),
                         ),
@@ -167,9 +172,30 @@ class _HomeScreenState extends State<HomeScreen> {
                     RaisedButton(
                         child: Text("Search"),
                         onPressed: () {
-                          null;
+                          if (_controller.text.length < 1) {
+                            null;
+                            // print(1);
+                          } else {
+                            // print(2);
+                            try {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return BookFind(
+                                  search: _controller.text,
+                                );
+                              }));
+                            } catch (e) {
+                              print(e.toString());
+                            }
+                          }
                         }),
                     Text(lastWords),
+                    FlatButton(
+                      child: Text("stop"),
+                      onPressed: (){
+                        stopListening();
+                      },
+                    )
                   ],
                 ),
               ),
@@ -208,6 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void resultListener(SpeechRecognitionResult result) {
     setState(() {
       lastWords = "${result.recognizedWords}"; // - ${result.finalResult}";
+      _controller.text = lastWords;
     });
   }
 
