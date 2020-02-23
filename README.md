@@ -2,6 +2,11 @@
 
 A new Flutter project.
 
+Library system with backend as firebase with features like searching of books with voice,
+issuing a book, paying late fees,
+managing books, and much more.
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
